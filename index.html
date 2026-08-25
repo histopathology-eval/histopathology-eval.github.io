@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+<meta name="description" content="Towards Trustworthy Biological Alignment in TabPFN-Probed Pathology Foundation Models. A training-free audit that pairs frozen pathology encoders with a frozen TabPFN probe on spatially matched histology and transcriptomics from HEST-1k, and stress-tests the decoded signal with negative controls, distribution shift, benign perturbations, and a section-identity shortcut probe.">
+<meta property="og:title" content="Towards Trustworthy Biological Alignment in TabPFN-Probed Pathology Foundation Models"/>
+<meta property="og:description" content="Decodability is not a certificate of biology: frozen pathology representations carry molecular signal that survives negative controls, yet lose 62% of it under organ-level shift while section identity stays decodable at 214x chance."/>
+<meta property="og:image" content="static/images/overview.png" />
+<meta property="og:image:width" content="1200"/>
+<meta property="og:image:height" content="630"/>
+<meta name="twitter:title" content="Towards Trustworthy Biological Alignment in TabPFN-Probed Pathology Foundation Models">
+<meta name="twitter:description" content="A training-free, gradient-free audit of what pathology foundation models actually encode about molecular biology - and how much of it survives controls and shift.">
+<meta name="twitter:image" content="static/images/overview.png">
+<meta name="twitter:card" content="summary_large_image">
+
+<!-- TODO: once this page is deployed, add <link rel="canonical">, og:url, and absolute
+     citation_pdf_url / citation_abstract_html_url. Add citation_arxiv_id after posting. -->
+
+<!-- Google Scholar / citation metadata -->
+<meta name="citation_title" content="Towards Trustworthy Biological Alignment in TabPFN-Probed Pathology Foundation Models">
+<meta name="citation_author" content="Bhattacharjee, Ushashi">
+<meta name="citation_author" content="Das, Alloy">
+<meta name="citation_author" content="Hannan, Saria">
+<meta name="citation_author" content="Roy, Tirtho">
+<meta name="citation_author" content="Howlader, Koushik">
+<meta name="citation_author" content="Sarkar, Soumik">
+<meta name="citation_publication_date" content="2026">
+<meta name="citation_pdf_url" content="static/paper/paper.pdf">
+  <title>Trustworthy Biological Alignment in TabPFN-Probed Pathology Foundation Models</title>
+  <link rel="icon" type="image/x-icon" href="static/images/overview.png">
+  <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro"
+  rel="stylesheet">
+
+  <link rel="stylesheet" href="static/css/bulma.min.css">
+  <link rel="stylesheet" href="static/css/bulma-carousel.min.css">
+  <link rel="stylesheet" href="static/css/bulma-slider.min.css">
+  <link rel="stylesheet" href="static/css/fontawesome.all.min.css">
+  <link rel="stylesheet"
+  href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+  <link rel="stylesheet" href="static/css/index.css">
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script defer src="static/js/fontawesome.all.min.js"></script>
+  <script src="static/js/bulma-carousel.min.js"></script>
+  <script src="static/js/bulma-slider.min.js"></script>
+  <script src="static/js/index.js"></script>
+</head>
+<body>
+
+
+  <section class="hero">
+    <div class="hero-body">
+      <div class="container is-max-desktop">
+        <div class="columns is-centered">
+          <div class="column has-text-centered">
+            <h1 class="title is-1 publication-title">Towards Trustworthy Biological Alignment in TabPFN-Probed Pathology Foundation Models</h1>
+            <div class="is-size-5 publication-authors">
+              <div class="author-list">
+                <span class="author-block">
+                  <a href="https://www.linkedin.com/in/ushashi-bhattacharjee/" target="_blank"><b>Ushashi Bhattacharjee</b></a><sup style="color:#1f77b4;">1,&#42;</sup>,
+                </span>
+                <span class="author-block">
+                  <a href="https://alloydas.github.io/" target="_blank"><b>Alloy Das</b></a><sup style="color:#1f77b4;">1,&#42;</sup>,
+                </span>
+                <span class="author-block">
+                  <a href="https://sariahannan.github.io/" target="_blank">Saria Hannan</a><sup>1</sup>,
+                </span>
+                <span class="author-block">
+                  <a href="https://www.linkedin.com/in/tirtho-roy-apon/" target="_blank">Tirtho Roy</a><sup>1</sup>,
+                </span>
+                <span class="author-block">
+                  <a href="https://www.cs.iastate.edu/people/koushik-howlader" target="_blank">Koushik Howlader</a><sup>1</sup>,
+                </span>
+                <span class="author-block">
+                  <a href="https://sites.google.com/view/scslab-isu/principal-investigator" target="_blank"><b>Soumik Sarkar</b></a><sup style="color:#1f77b4;">1,&dagger;</sup>
+                </span>
+              </div>
+
+              <div class="is-size-5 publication-authors">
+                <p><sup>1</sup> Iowa State University, USA</p>
+                <p class="eql-cntrb"><i><sup style="color:#1f77b4;">&#42;</sup>Equal contribution</i></p>
+                <p><i><sup style="color:#1f77b4;">&dagger;</sup>Corresponding author: <a href="mailto:soumiks@iastate.edu">soumiks@iastate.edu</a></i></p>
+                <p class="venue-review"><span class="tag-review">Under Review</span> Training-free audit of morpho&ndash;molecular alignment on HEST-1k</p>
+              </div>
+
+                  <div class="column has-text-centered">
+                    <div class="publication-links">
+                      <!-- Paper PDF -->
+ <span class="link-block">
+  <a href="static/paper/paper.pdf"
+     target="_blank"
+     class="external-link button is-normal is-rounded is-dark">
+    <span class="icon">
+      <i class="fas fa-file-pdf"></i>
+    </span>
+    <span>Paper</span>
+  </a>
+</span>
+
+      <!-- arXiv -->
+      <!-- TODO: point href at the arXiv abstract page once the preprint is posted -->
+      <span class="link-block">
+          <a href="#" target="_blank"
+              class="external-link button is-normal is-rounded is-dark">
+              <span class="icon">
+                  <i class="ai ai-arxiv"></i>
+              </span>
+              <span>arXiv (soon)</span>
+          </a>
+      </span>
+
+      <!-- Code -->
+      <!-- TODO: point href at the code repository once it is public -->
+      <span class="link-block">
+          <a href="#" target="_blank"
+              class="external-link button is-normal is-rounded is-dark">
+              <span class="icon">
+                  <i class="fab fa-github"></i>
+              </span>
+              <span>Code (soon)</span>
+          </a>
+      </span>
+
+      <!-- Dataset -->
+      <span class="link-block">
+          <a href="https://huggingface.co/datasets/MahmoodLab/hest" target="_blank"
+              class="external-link button is-normal is-rounded is-dark">
+              <span class="icon">
+                  <i class="fas fa-database"></i>
+              </span>
+              <span>HEST-1k</span>
+          </a>
+      </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Teaser image -->
+<section class="hero teaser">
+  <div class="container is-max-desktop">
+    <div class="hero-body">
+       <h2 class="title is-3 has-text-centered">A training-free morpho&ndash;molecular audit</h2>
+      <img src="static/images/overview.png" alt="Spatially paired H&E and transcriptomics are encoded by a frozen pathology foundation model, then decoded in-context by a frozen TabPFN probe." style="width: 100%; height: auto;">
+      <h2 class="subtitle has-text-centered">
+        Spatially paired H&amp;E and transcriptomics from HEST-1k are encoded by a <b>frozen</b> pathology
+        foundation model; a <b>frozen</b> TabPFN probe then decodes gene expression and pathway activity
+        in-context. No parameters are updated, so decodability reflects the representation and the
+        underlying biology rather than a trained prediction head.
+      </h2>
+    </div>
+  </div>
+</section>
+
+
+<!-- Abstract -->
+<section class="section hero is-light">
+  <div class="container is-max-desktop">
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">Abstract</h2>
+        <div class="content has-text-justified">
+          <p>
+            Histology and transcriptomic data provide complementary views of tissue biology through
+            spatial morphology and molecular activity. Pathology foundation models (PFMs) encode rich
+            tissue morphology, but strong downstream performance does not necessarily indicate that
+            their representations capture robust biological information. We present a training-free
+            framework for auditing biological alignment in frozen PFMs using spatially paired histology
+            and transcriptomics from HEST-1k, evaluated on 240 samples spanning three organs. We use
+            several frozen PFMs to obtain features from H&amp;E images and group gene expression into
+            meaningful biological pathways. TabPFN serves as a pretrained probe to measure how well
+            these molecular programs can be decoded without task-specific gradient updates. We test
+            whether pathway predictions remain reliable across different tissue sections, patient
+            groups, and tissue types, and whether the models rely on shortcuts or small image changes.
+            We further track prediction stability under context resampling as a sensitivity diagnostic.
+            The resulting multi-tissue audit characterizes which molecular pathways are robustly
+            represented, tissue-specific, or shortcut-sensitive, providing a systematic approach for
+            evaluating trustworthy biological alignment in pathology foundation models.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- Motivation -->
+<section class="section">
+  <div class="container is-max-desktop">
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">Why audit a frozen model?</h2>
+        <div class="content has-text-justified">
+          <p>
+            Histology-to-expression models such as STNet, BLEEP, and mclSTExp, and molecularly
+            supervised approaches such as TANGLE, SPADE, SEAL, and PathLUPI, all train task-specific
+            components. When such a model predicts expression well, it is impossible to tell whether the
+            biology was <i>already</i> present in the frozen representation or was learned by the
+            downstream head. Separately, pathology encoders are known to pick up section, site, scanner,
+            and batch cues &mdash; but those shortcut studies are usually run apart from molecular
+            prediction.
+          </p>
+          <p>
+            We keep both the encoder and the probe frozen. TabPFN conditions on a labeled context at
+            inference time, so nothing is fitted to the dataset: the resulting correlation is a property
+            of the representation and the biology, not of an optimizer. That makes it possible to ask two
+            questions with the same pipeline &mdash; <b>what molecular programs are encoded</b>, and
+            <b>which of them survive controls and distribution shift</b>.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- Contributions -->
+<section class="section hero is-light">
+  <div class="container is-max-desktop">
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">Contributions</h2>
+        <div class="content has-text-justified">
+          <p>
+            <b>A training-free alignment audit.</b> Spatially paired histology and transcriptomics are
+            probed with TabPFN as a standardized pretrained probe rather than a task-specific predictor,
+            so decodability measures the representation instead of the head.
+          </p>
+          <p>
+            <b>A four-operator audit protocol.</b> Gene- and pathway-level decodability is coupled with
+            negative controls (label-shuffle, random-feature), distribution-shift evaluation,
+            benign-perturbation stability, and a within-section shortcut test &mdash; all applied to the
+            same frozen pipeline.
+          </p>
+          <p>
+            <b>Evidence that decodability and trustworthiness diverge.</b> Frozen pathology
+            representations carry biologically patterned molecular signal that survives our controls, yet
+            part of their apparent alignment is sensitive to distribution shift or driven by section-level
+            structure: section identity is itself linearly decodable up to 214&times; chance.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- Audit operators -->
+<section class="hero is-small">
+  <div class="hero-body">
+    <div class="container is-max-desktop">
+      <h2 class="title is-3 has-text-centered">The four audit operators</h2>
+      <img src="static/images/audit_operators.png" alt="The four audit operators: negative controls, distribution shift, benign perturbations, and the section-identity shortcut." style="width: 100%; height: auto;">
+      <p class="description">
+        All four operators run on the same frozen pipeline. <b>(1) Negative controls</b> permute context
+        labels or replace the encoder with random features. <b>(2) Distribution shift</b> draws context
+        and queries from disjoint sections, cohorts, or organs. <b>(3) Benign perturbations</b> re-embed
+        queries under stain and colour jitter, rotation, blur, and JPEG compression. <b>(4) Shortcut
+        probes</b> fit a linear section-identity classifier and permute targets <i>within</i> a section.
+        A representation is trustworthy only if decodability is high <i>and</i> survives all four.
+      </p>
+    </div>
+  </div>
+</section>
+
+
+<!-- Setup -->
+<section class="hero is-small is-light">
+  <div class="hero-body">
+    <div class="container is-max-desktop">
+      <h2 class="title is-3 has-text-centered">240 samples, three organs, five frozen encoders</h2>
+      <div class="content has-text-justified">
+        <p>
+          The audit is inherently per-organ: every verdict compares an organ's matched decodability
+          against its <i>own</i> within-section control, so an organ needs enough sections to estimate
+          that control. We therefore run the definitive audit on the three data-rich organs of HEST-1k
+          &mdash; <b>Breast, Skin, and Brain</b> (each <i>n</i>&nbsp;&ge;&nbsp;37, 240 samples total,
+          four spatial technologies). Regime membership is not assigned a priori: each organ is placed
+          by its measured matched-vs-control contrast, and no organ is excluded.
+        </p>
+        <p>
+          Targets are the top-1000 highly variable genes per group and ssGSEA scores over
+          Reactome&nbsp;+&nbsp;MSigDB Hallmark. Contexts of size <i>K</i>&nbsp;&isin;&nbsp;{8,&nbsp;32,&nbsp;128,&nbsp;512}
+          are drawn under random, section-balanced, diverse, and nearest-neighbour strategies, with
+          five-fold specimen-level cross-validation over three seeds and grouped bootstrap confidence
+          intervals. The primary encoder is UNI; the identical protocol is repeated with Phikon,
+          Phikon-v2, a Lunit DINO ViT, and a CTransPath-style SimCLR ResNet to test whether the
+          conclusions are encoder-specific.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- RQ1 -->
+<section class="hero is-small">
+  <div class="hero-body">
+    <div class="container is-max-desktop">
+      <h2 class="title is-3 has-text-centered">Decodability across encoders and tissues</h2>
+      <div class="columns is-centered">
+        <div class="column is-half">
+          <img src="static/images/fig_dec_path.png" alt="Per-organ pathway decodability across five frozen encoders." style="width: 100%; height: auto;">
+          <p class="has-text-centered"><b>(a) Pathways</b></p>
+        </div>
+        <div class="column is-half">
+          <img src="static/images/fig_dec_gene.png" alt="Per-organ gene decodability across five frozen encoders." style="width: 100%; height: auto;">
+          <p class="has-text-centered"><b>(b) Genes</b></p>
+        </div>
+      </div>
+      <p class="description">
+        Only the encoder changes, so the in-context probe ranks representations directly. Across all five
+        encoders, matched decodability sits far above the label-shuffle and random-feature floors, so the
+        recovered signal belongs to the representation rather than to the probe or the target marginals.
+        Two structural patterns emerge: decodability is strongly <b>tissue-dependent</b> (structured
+        epithelial organs &mdash; Breast, Skin &mdash; beat Brain), and <b>pathway activity is more
+        consistently recoverable than individual genes</b>. Pathway decodability ranks UNI at
+        <b>0.303</b> far above the four substitutes, which cluster near 0.054 with Lunit trailing at
+        0.044; UNI is significantly best in every organ&times;target cell (Mann&ndash;Whitney over
+        per-target PCCs, Holm-corrected, all <i>p</i>&nbsp;&lt;&nbsp;10<sup>&minus;5</sup>). UNI clears
+        the shuffle floor by ~19&times; on pathways; the substitutes sit only ~3&times; above it. This is a
+        ranking under a <i>frozen, training-free</i> probe, not an absolute ranking of pathology
+        foundation models.
+      </p>
+    </div>
+  </div>
+</section>
+
+
+<!-- RQ2 -->
+<section class="hero is-small is-light">
+  <div class="hero-body">
+    <div class="container is-max-desktop">
+      <h2 class="title is-3 has-text-centered">Label efficiency and in-context scaling</h2>
+      <div class="columns is-centered">
+        <div class="column is-half">
+          <img src="static/images/fig_labeleff.png" alt="Label efficiency of the frozen TabPFN probe versus trained-probe references." style="width: 100%; height: auto;">
+          <p class="has-text-centered"><b>(a) Label efficiency</b></p>
+        </div>
+        <div class="column is-half">
+          <img src="static/images/fig_kscale_breast.png" alt="Pathway decodability versus context size on Breast." style="width: 100%; height: auto;">
+          <p class="has-text-centered"><b>(b) Breast</b></p>
+        </div>
+      </div>
+      <div class="columns is-centered">
+        <div class="column is-half">
+          <img src="static/images/fig_kscale_skin.png" alt="Pathway decodability versus context size on Skin." style="width: 100%; height: auto;">
+          <p class="has-text-centered"><b>(c) Skin</b></p>
+        </div>
+        <div class="column is-half">
+          <img src="static/images/fig_kscale_brain.png" alt="Pathway decodability versus context size on Brain." style="width: 100%; height: auto;">
+          <p class="has-text-centered"><b>(d) Brain</b></p>
+        </div>
+      </div>
+      <p class="description">
+        Fixing the encoder to UNI and varying only the probe and the in-context budget, the training-free
+        probe beats the gradient-trained MLP: TabPFN reaches pathway PCC <b>0.303</b> versus <b>0.161</b>
+        for the MLP (<i>p</i>&nbsp;&lt;&nbsp;10<sup>&minus;3</sup>, Holm), with kNN at 0.244 and Ridge at
+        0.141. It attains a PCC comparable to the reported HEST-1k trained-probe reference using roughly
+        <b>23&times; fewer labeled context examples</b> &mdash; a level the other frozen encoders never
+        reach at any context size. For UNI, decodability rises with context size <i>K</i>; the substitute
+        encoders stay flat.
+      </p>
+    </div>
+  </div>
+</section>
+
+
+<!-- RQ3 -->
+<section class="hero is-small">
+  <div class="hero-body">
+    <div class="container is-max-desktop">
+      <h2 class="title is-3 has-text-centered">High in-distribution scores do not transport</h2>
+      <div class="columns is-centered">
+        <div class="column is-one-third">
+          <img src="static/images/fig_ood_breast.png" alt="IID versus organ-OOD pathway decodability on Breast." style="width: 100%; height: auto;">
+          <p class="has-text-centered"><b>Breast</b></p>
+        </div>
+        <div class="column is-one-third">
+          <img src="static/images/fig_ood_skin.png" alt="IID versus organ-OOD pathway decodability on Skin." style="width: 100%; height: auto;">
+          <p class="has-text-centered"><b>Skin</b></p>
+        </div>
+        <div class="column is-one-third">
+          <img src="static/images/fig_ood_brain.png" alt="IID versus organ-OOD pathway decodability on Brain." style="width: 100%; height: auto;">
+          <p class="has-text-centered"><b>Brain</b></p>
+        </div>
+      </div>
+      <p class="description">
+        In-distribution pathway PCC <b>0.303</b> falls to <b>0.114</b> when the context is drawn from a
+        held-out organ &mdash; a <b>62% decline</b>. UNI retains roughly half its signal on Breast and
+        Skin but collapses on Brain, while the substitute encoders have no signal to lose. Organ holdout
+        is deliberately a stringent transfer bound rather than an invariance test, since genuine molecular
+        programs differ across organs. Under benign perturbations the picture is better: geometric
+        transforms (flip, 90&deg; rotation) are effectively lossless (&ge;95% of the clean 0.294 PCC), and
+        even heavy blur and strong colour jitter retain ~72%, with clean-vs-perturbed prediction agreement
+        above 0.84 throughout. Meanwhile section identity is linearly decodable up to <b>214&times;
+        chance</b> on human Visium &mdash; a strong site-specific shortcut sitting in the same embedding.
+      </p>
+    </div>
+  </div>
+</section>
+
+
+<!-- RQ4 -->
+<section class="hero is-small is-light">
+  <div class="hero-body">
+    <div class="container is-max-desktop">
+      <h2 class="title is-3 has-text-centered">What survives the shortcut controls</h2>
+      <div class="columns is-centered">
+        <div class="column is-one-third">
+          <img src="static/images/fig_trust_breast.png" alt="Matched versus within-section control decodability on Breast." style="width: 100%; height: auto;">
+          <p class="has-text-centered"><b>Breast</b></p>
+        </div>
+        <div class="column is-one-third">
+          <img src="static/images/fig_trust_skin.png" alt="Matched versus within-section control decodability on Skin." style="width: 100%; height: auto;">
+          <p class="has-text-centered"><b>Skin</b></p>
+        </div>
+        <div class="column is-one-third">
+          <img src="static/images/fig_trust_brain.png" alt="Matched versus within-section control decodability on Brain." style="width: 100%; height: auto;">
+          <p class="has-text-centered"><b>Brain</b></p>
+        </div>
+      </div>
+      <p class="description">
+        Matched decodability <b>0.303</b> collapses to <b>0.016</b> under label permutation and
+        <b>&minus;0.006</b> under random features, ruling out target-marginal and probe-only
+        explanations. The critical test is the within-section control, which removes the cross-section
+        shortcut: under it UNI's pathway decodability drops to <b>0.120</b> but stays well above the
+        shuffle floor &mdash; a nonzero residual beyond section identity. Because a single section supplies
+        fewer spots, this control uses the largest feasible context (<i>K</i>&nbsp;=&nbsp;256 versus 512
+        for the matched condition), so the gap mixes shortcut removal with reduced context and cannot be
+        read as a clean effect size. For the substitute encoders the control meets or exceeds the matched
+        score, marking their already-weak signal as section-driven.
+      </p>
+    </div>
+  </div>
+</section>
+
+
+<!-- Spatial -->
+<section class="hero is-small">
+  <div class="hero-body">
+    <div class="container is-max-desktop">
+      <h2 class="title is-3 has-text-centered">Does the prediction look like the tissue?</h2>
+      <img src="static/images/fig_spatial.png" alt="Ground-truth spatial pathway maps beside TabPFN, kNN, Ridge, and MLP reconstructions for Breast, Skin, and Brain." style="width: 100%; height: auto;">
+      <p class="description">
+        For one representative section per organ, the most-decodable Hallmark pathway is reconstructed
+        over the whole section by each probe, all sharing the same frozen UNI features and
+        <i>K</i>&nbsp;=&nbsp;512 context. TabPFN reproduces the ground-truth spatial organization most
+        faithfully; the pattern is clearest in structured tissue (Skin) and weakest in Brain, mirroring
+        the quantitative trends. The strongest aggregate scores therefore correspond to coherent
+        tissue-level patterns rather than isolated spot-wise agreement.
+      </p>
+    </div>
+  </div>
+</section>
+
+
+<!-- Takeaways -->
+<section class="section">
+  <div class="container is-max-desktop">
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">What the audit says</h2>
+        <div class="content has-text-justified">
+          <p>
+            <b>The signal is real.</b> Matched decodability stays far above the label-shuffle
+            (0.016) and random-feature (&minus;0.006) floors, and predictions are stable across context
+            reseeds.
+          </p>
+          <p>
+            <b>It is biologically patterned.</b> Pathway activity (0.303) is more consistently
+            recoverable than individual-gene expression (0.135), and structured epithelial tissue decodes
+            better than Brain.
+          </p>
+          <p>
+            <b>It does not transport.</b> Organ-level shift costs 62% of the pathway signal, and section
+            identity remains linearly decodable at up to 214&times; chance.
+          </p>
+          <p>
+            <b>So report a profile, not a number.</b> Matched decodability, separation from negative
+            controls, retention under shift, and the within-section residual together distinguish a
+            merely predictive encoder from one whose molecular readout supports biological
+            interpretation. Because the probe is standardized and gradient-free, the whole audit can be
+            re-run as a routine diagnostic for a new pathology foundation model.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- Limitations -->
+<section class="section hero is-light">
+  <div class="container is-max-desktop">
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">Limitations</h2>
+        <div class="content has-text-justified">
+          <p>
+            TabPFN is the primary probe family. Ridge, kNN, and MLP baselines show that the broad tissue
+            and encoder trends are not unique to one head, but absolute PCC and especially label
+            efficiency can remain probe-specific.
+          </p>
+          <p>
+            The within-section control is limited to <i>K</i>&nbsp;=&nbsp;256 while the matched condition
+            uses 512, so its lower PCC mixes shortcut removal with reduced context; we interpret only the
+            residual above the shuffle floor and leave a matched-<i>K</i> ablation as follow-up.
+          </p>
+          <p>
+            Organ-OOD evaluates portability across biological domains, not invariance: organ-specific
+            programs, differing gene panels, and technology composition all contribute to the drop.
+            The definitive audit covers only Breast, Skin, and Brain, because these are the organs with
+            enough sections to estimate the shortcut control.
+          </p>
+          <p>
+            HEST lacks harmonized scanner, stain, and site metadata, so the most deployment-relevant
+            controlled shifts cannot be run here. Our label permutations also do not model spatial
+            autocorrelation, and context-reseed stability is a sensitivity diagnostic rather than a
+            calibrated uncertainty analysis.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- BibTeX -->
+<section class="section" id="BibTeX">
+  <div class="container is-max-desktop content">
+      <h2 class="title">BibTeX</h2>
+      <p><i>Status: under review. This entry will be replaced with the arXiv record once the preprint is posted, and with the venue record on acceptance.</i></p>
+      <pre><code>@unpublished{bhattacharjee2026trustworthy,
+  title  = {Towards Trustworthy Biological Alignment in TabPFN-Probed
+            Pathology Foundation Models},
+  author = {Bhattacharjee, Ushashi and Das, Alloy and Hannan, Saria and
+            Roy, Tirtho and Howlader, Koushik and Sarkar, Soumik},
+  year   = {2026},
+  note   = {Under review}
+}</code></pre>
+  </div>
+</section>
+
+
+<!-- Team -->
+<section class="section">
+  <div class="container is-max-desktop">
+    <div class="columns is-centered">
+      <div class="column is-full-width has-text-centered">
+        <h2 class="title is-3">
+          <span class="dvima">Team</span>
+        </h2>
+        <div class="columns is-multiline is-centered">
+
+          <div class="column is-one-fifth has-text-centered video-column">
+            <a href="https://www.linkedin.com/in/ushashi-bhattacharjee/" target="_blank" style="border-bottom: none;">
+              <span class="image">
+                <img src="static/images/team/Ushashi.png" alt="Ushashi Bhattacharjee" style="width: 90%; border-radius: 50%;" />
+              </span>
+              <span style="font-weight: bold;">Ushashi Bhattacharjee</span>
+            </a>
+            <p class="team-links">
+              <a href="https://www.linkedin.com/in/ushashi-bhattacharjee/" target="_blank"
+                 aria-label="Ushashi Bhattacharjee on LinkedIn" style="border-bottom: none;">
+                <span class="icon"><i class="fab fa-linkedin"></i></span>
+              </a>
+              <a href="https://scholar.google.com/citations?user=nE0JzCEAAAAJ&amp;hl=en" target="_blank"
+                 aria-label="Ushashi Bhattacharjee on Google Scholar" style="border-bottom: none;">
+                <span class="icon"><i class="ai ai-google-scholar"></i></span>
+              </a>
+            </p>
+            <p class="eql-cntrb"><i>Equal contribution</i></p>
+          </div>
+
+          <div class="column is-one-fifth has-text-centered video-column">
+            <a href="https://alloydas.github.io/" target="_blank" style="border-bottom: none;">
+              <span class="image">
+                <img src="static/images/team/Alloy.png" alt="Alloy Das" style="width: 90%; border-radius: 50%;" />
+              </span>
+              <span style="font-weight: bold;">Alloy Das</span>
+            </a>
+            <p class="team-links">
+              <a href="https://alloydas.github.io/" target="_blank"
+                 aria-label="Alloy Das homepage" style="border-bottom: none;">
+                <span class="icon"><i class="fas fa-home"></i></span>
+              </a>
+              <a href="https://scholar.google.com/citations?user=JnO0s1AAAAAJ" target="_blank"
+                 aria-label="Alloy Das on Google Scholar" style="border-bottom: none;">
+                <span class="icon"><i class="ai ai-google-scholar"></i></span>
+              </a>
+              <a href="https://www.linkedin.com/in/alloy-das-a512a916b" target="_blank"
+                 aria-label="Alloy Das on LinkedIn" style="border-bottom: none;">
+                <span class="icon"><i class="fab fa-linkedin"></i></span>
+              </a>
+            </p>
+            <p class="eql-cntrb"><i>Equal contribution</i></p>
+          </div>
+
+          <div class="column is-one-fifth has-text-centered video-column">
+            <a href="https://sariahannan.github.io/" target="_blank" style="border-bottom: none;">
+              <span class="image">
+                <img src="static/images/team/Saria.png" alt="Saria Hannan" style="width: 90%; border-radius: 50%;" />
+              </span>
+              <span style="font-weight: bold;">Saria Hannan</span>
+            </a>
+            <p class="team-links">
+              <a href="https://sariahannan.github.io/" target="_blank"
+                 aria-label="Saria Hannan homepage" style="border-bottom: none;">
+                <span class="icon"><i class="fas fa-home"></i></span>
+              </a>
+              <a href="https://scholar.google.com/citations?user=SpwLda4AAAAJ&amp;hl=en" target="_blank"
+                 aria-label="Saria Hannan on Google Scholar" style="border-bottom: none;">
+                <span class="icon"><i class="ai ai-google-scholar"></i></span>
+              </a>
+              <a href="https://www.linkedin.com/in/saria-hannan/" target="_blank"
+                 aria-label="Saria Hannan on LinkedIn" style="border-bottom: none;">
+                <span class="icon"><i class="fab fa-linkedin"></i></span>
+              </a>
+            </p>
+          </div>
+
+          <div class="column is-one-fifth has-text-centered video-column">
+            <a href="https://www.linkedin.com/in/tirtho-roy-apon/" target="_blank" style="border-bottom: none;">
+              <span class="image">
+                <img src="static/images/team/Tirtho.png" alt="Tirtho Roy" style="width: 90%; border-radius: 50%;" />
+              </span>
+              <span style="font-weight: bold;">Tirtho Roy</span>
+            </a>
+            <p class="team-links">
+              <a href="https://www.linkedin.com/in/tirtho-roy-apon/" target="_blank"
+                 aria-label="Tirtho Roy on LinkedIn" style="border-bottom: none;">
+                <span class="icon"><i class="fab fa-linkedin"></i></span>
+              </a>
+            </p>
+          </div>
+
+          <div class="column is-one-fifth has-text-centered video-column">
+            <a href="https://www.cs.iastate.edu/people/koushik-howlader" target="_blank" style="border-bottom: none;">
+              <span class="image">
+                <img src="static/images/team/Koushik.png" alt="Koushik Howlader" style="width: 90%; border-radius: 50%;" />
+              </span>
+              <span style="font-weight: bold;">Koushik Howlader</span>
+            </a>
+          </div>
+
+          <div class="column is-one-fifth has-text-centered video-column">
+            <a href="https://sites.google.com/view/scslab-isu/principal-investigator" target="_blank" style="border-bottom: none;">
+              <span class="image">
+                <img src="static/images/team/Soumik.png" alt="Soumik Sarkar" style="width: 90%; border-radius: 50%;" />
+              </span>
+              <span style="font-weight: bold;">Soumik Sarkar</span>
+            </a>
+            <p class="team-links">
+              <a href="https://sites.google.com/view/scslab-isu/principal-investigator" target="_blank"
+                 aria-label="Soumik Sarkar lab page" style="border-bottom: none;">
+                <span class="icon"><i class="fas fa-home"></i></span>
+              </a>
+              <a href="https://scholar.google.com/citations?user=-rmRjqIAAAAJ&amp;hl=en" target="_blank"
+                 aria-label="Soumik Sarkar on Google Scholar" style="border-bottom: none;">
+                <span class="icon"><i class="ai ai-google-scholar"></i></span>
+              </a>
+            </p>
+            <p class="eql-cntrb"><i>Corresponding author</i></p>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<footer class="footer">
+  <div class="container">
+    <div class="columns is-centered">
+      <div class="column is-8">
+        <div class="content has-text-centered">
+          <p>
+            This page borrows its layout from the
+            <a href="https://github.com/nerfies/nerfies.github.io" target="_blank">Nerfies</a> project
+            page template, released under a
+            <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/" target="_blank">CC BY-SA 4.0</a>
+            license.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
